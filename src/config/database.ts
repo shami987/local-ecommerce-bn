@@ -6,15 +6,27 @@ export const connectDB = async () => {
     
     if (!mongoUri) {
       console.error('MONGODB_URI is not defined in environment variables');
-      console.log('Please update your .env file with a valid MongoDB Atlas connection string');
       process.exit(1);
     }
 
+    console.log('Attempting to connect to MongoDB...');
+    
+    // Set mongoose options
+    mongoose.set('strictQuery', false);
+    
     const conn = await mongoose.connect(mongoUri);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error('Database connection failed:', error);
-    console.log('Please check your MongoDB Atlas connection string in .env file');
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  } catch (error: any) {
+    console.error('❌ Database connection failed:', error.message);
+    
+    if (error.code === 'EREFUSED' || error.code === 'ENOTFOUND') {
+      console.log('\n🔧 Network/DNS Issue - Try these steps:');
+      console.log('1. Check your internet connection');
+      console.log('2. Verify MongoDB Atlas cluster is running');
+      console.log('3. Add your IP to MongoDB Atlas whitelist');
+      console.log('4. Try using a different network (mobile hotspot)');
+    }
+    
     process.exit(1);
   }
 };

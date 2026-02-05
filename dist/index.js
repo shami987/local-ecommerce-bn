@@ -7,16 +7,20 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./config/database");
 const auth_1 = __importDefault(require("./routes/auth"));
+// Load environment variables first
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
-// Connect to MongoDB
-(0, database_1.connectDB)();
+// Middleware
 app.use(express_1.default.json());
+// Routes
 app.use('/api/auth', auth_1.default);
 app.get('/', (req, res) => {
     res.json({ message: 'Auth API is running' });
 });
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+// Connect to MongoDB after server starts
+(0, database_1.connectDB)();

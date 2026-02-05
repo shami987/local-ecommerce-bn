@@ -1,0 +1,1 @@
+// Auth controller - handles registration and login logic

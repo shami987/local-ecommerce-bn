@@ -6,7 +6,7 @@ const password_1 = require("../utils/password");
 const jwt_1 = require("../utils/jwt");
 const register = async (req, res) => {
     try {
-        const { email, password, name } = req.body;
+        const { email, password, name, role } = req.body;
         // Check if user exists
         const existingUser = await User_1.UserModel.findOne({ email });
         if (existingUser) {
@@ -17,14 +17,15 @@ const register = async (req, res) => {
         const newUser = new User_1.UserModel({
             email,
             password: hashedPassword,
-            name
+            name,
+            role: role || 'customer'
         });
         await newUser.save();
         const token = (0, jwt_1.generateToken)(newUser._id.toString());
         res.status(201).json({
             message: 'User registered successfully',
             token,
-            user: { id: newUser._id, email: newUser.email, name: newUser.name }
+            user: { id: newUser._id, email: newUser.email, name: newUser.name, role: newUser.role }
         });
     }
     catch (error) {
@@ -49,7 +50,7 @@ const login = async (req, res) => {
         res.json({
             message: 'Login successful',
             token,
-            user: { id: user._id, email: user.email, name: user.name }
+            user: { id: user._id, email: user.email, name: user.name, role: user.role }
         });
     }
     catch (error) {

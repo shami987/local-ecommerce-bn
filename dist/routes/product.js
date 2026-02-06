@@ -1,16 +1,10 @@
-import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
-import { authorize } from '../middleware/authorize';
-import {
-  getAllProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct
-} from '../controllers/productController';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const authorize_1 = require("../middleware/authorize");
+const productController_1 = require("../controllers/productController");
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * /api/products:
@@ -21,8 +15,7 @@ const router = Router();
  *       200:
  *         description: List of products
  */
-router.get('/', getAllProducts);
-
+router.get('/', productController_1.getAllProducts);
 /**
  * @swagger
  * /api/products/{id}:
@@ -41,8 +34,7 @@ router.get('/', getAllProducts);
  *       404:
  *         description: Product not found
  */
-router.get('/:id', getProductById);
-
+router.get('/:id', productController_1.getProductById);
 /**
  * @swagger
  * /api/products:
@@ -88,8 +80,7 @@ router.get('/:id', getProductById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin', 'business_owner'), createProduct);
-
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.createProduct);
 /**
  * @swagger
  * /api/products/{id}:
@@ -137,8 +128,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), updateProduct);
-
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.updateProduct);
 /**
  * @swagger
  * /api/products/{id}:
@@ -161,6 +151,5 @@ router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), upda
  *       401:
  *         description: Unauthorized
  */
-router.delete('/:id', authenticateToken, authorize('admin', 'business_owner'), deleteProduct);
-
-export default router;
+router.delete('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.deleteProduct);
+exports.default = router;

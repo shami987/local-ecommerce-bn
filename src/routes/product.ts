@@ -74,6 +74,8 @@ router.get('/:id', getProductById);
  *                 type: number
  *               category:
  *                 type: string
+ *               shop:
+ *                 type: string
  *               image:
  *                 type: string
  *               stock:
@@ -120,6 +122,8 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *               originalPrice:
  *                 type: number
  *               category:
+ *                 type: string
+ *               shop:
  *                 type: string
  *               image:
  *                 type: string

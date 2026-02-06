@@ -1,33 +1,33 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import {
-  getAllProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct
-} from '../controllers/productController';
+  getAllShops,
+  getShopById,
+  createShop,
+  updateShop,
+  deleteShop
+} from '../controllers/shopController';
 
 const router = Router();
 
 /**
  * @swagger
- * /api/products:
+ * /api/shops:
  *   get:
- *     summary: Get all products (Public)
- *     tags: [Products]
+ *     summary: Get all shops (Public)
+ *     tags: [Shops]
  *     responses:
  *       200:
- *         description: List of products
+ *         description: List of shops
  */
-router.get('/', getAllProducts);
+router.get('/', getAllShops);
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /api/shops/{id}:
  *   get:
- *     summary: Get product by ID (Public)
- *     tags: [Products]
+ *     summary: Get shop by ID (Public)
+ *     tags: [Shops]
  *     parameters:
  *       - in: path
  *         name: id
@@ -36,18 +36,18 @@ router.get('/', getAllProducts);
  *           type: string
  *     responses:
  *       200:
- *         description: Product details
+ *         description: Shop details
  *       404:
- *         description: Product not found
+ *         description: Shop not found
  */
-router.get('/:id', getProductById);
+router.get('/:id', getShopById);
 
 /**
  * @swagger
- * /api/products:
+ * /api/shops:
  *   post:
- *     summary: Create a new product (Protected)
- *     tags: [Products]
+ *     summary: Create a new shop (Protected)
+ *     tags: [Shops]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -58,43 +58,36 @@ router.get('/:id', getProductById);
  *             type: object
  *             required:
  *               - name
- *               - price
- *               - category
- *               - seller
  *               - location
+ *               - telephone
+ *               - email
  *             properties:
  *               name:
  *                 type: string
  *               description:
  *                 type: string
- *               price:
- *                 type: number
- *               originalPrice:
- *                 type: number
- *               category:
+ *               location:
+ *                 type: string
+ *               telephone:
+ *                 type: string
+ *               email:
  *                 type: string
  *               image:
  *                 type: string
- *               stock:
- *                 type: number
- *               seller:
- *                 type: string
- *               location:
- *                 type: string
  *     responses:
  *       201:
- *         description: Product created
+ *         description: Shop created
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, createProduct);
+router.post('/', authenticateToken, createShop);
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /api/shops/{id}:
  *   put:
- *     summary: Update a product (Protected)
- *     tags: [Products]
+ *     summary: Update a shop (Protected)
+ *     tags: [Shops]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -114,36 +107,30 @@ router.post('/', authenticateToken, createProduct);
  *                 type: string
  *               description:
  *                 type: string
- *               price:
- *                 type: number
- *               originalPrice:
- *                 type: number
- *               category:
+ *               location:
+ *                 type: string
+ *               telephone:
+ *                 type: string
+ *               email:
  *                 type: string
  *               image:
  *                 type: string
- *               stock:
- *                 type: number
- *               seller:
- *                 type: string
- *               location:
- *                 type: string
  *     responses:
  *       200:
- *         description: Product updated
+ *         description: Shop updated
  *       404:
- *         description: Product not found
+ *         description: Shop not found
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, updateProduct);
+router.put('/:id', authenticateToken, updateShop);
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /api/shops/{id}:
  *   delete:
- *     summary: Delete a product (Protected)
- *     tags: [Products]
+ *     summary: Delete a shop (Protected)
+ *     tags: [Shops]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -154,12 +141,12 @@ router.put('/:id', authenticateToken, updateProduct);
  *           type: string
  *     responses:
  *       200:
- *         description: Product deleted
+ *         description: Shop deleted
  *       404:
- *         description: Product not found
+ *         description: Shop not found
  *       401:
  *         description: Unauthorized
  */
-router.delete('/:id', authenticateToken, deleteProduct);
+router.delete('/:id', authenticateToken, deleteShop);
 
 export default router;

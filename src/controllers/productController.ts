@@ -24,11 +24,11 @@ export const getProductById = async (req: Request, res: Response) => {
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, category, image, stock } = req.body;
-    if (!name || !price || !category) {
-      return res.status(400).json({ message: 'Name, price, and category are required' });
+    const { name, description, price, originalPrice, category, image, stock, seller, location } = req.body;
+    if (!name || !price || !category || !seller || !location) {
+      return res.status(400).json({ message: 'Name, price, category, seller, and location are required' });
     }
-    const product = await ProductModel.create({ name, description, price, category, image, stock });
+    const product = await ProductModel.create({ name, description, price, originalPrice, category, image, stock, seller, location });
     res.status(201).json({ message: 'Product created successfully', product });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -37,10 +37,10 @@ export const createProduct = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, category, image, stock } = req.body;
+    const { name, description, price, originalPrice, category, image, stock, seller, location } = req.body;
     const product = await ProductModel.findByIdAndUpdate(
       req.params.id,
-      { name, description, price, category, image, stock },
+      { name, description, price, originalPrice, category, image, stock, seller, location },
       { new: true, runValidators: true }
     ).populate('category');
     if (!product) {

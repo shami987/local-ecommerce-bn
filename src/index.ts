@@ -6,6 +6,7 @@ import { swaggerSpec } from './config/swagger';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/category';
 import productRoutes from './routes/product';
+import shopRoutes from './routes/shop';
 
 // Load environment variables first
 dotenv.config();
@@ -23,6 +24,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/shops', shopRoutes);
 
 app.get('/', (req, res) => {
   res.json({ 

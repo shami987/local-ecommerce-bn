@@ -1,16 +1,10 @@
-import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
-import { authorize } from '../middleware/authorize';
-import {
-  getAllCategories,
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  deleteCategory
-} from '../controllers/categoryController';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const authorize_1 = require("../middleware/authorize");
+const categoryController_1 = require("../controllers/categoryController");
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * /api/categories:
@@ -21,8 +15,7 @@ const router = Router();
  *       200:
  *         description: List of categories
  */
-router.get('/', getAllCategories);
-
+router.get('/', categoryController_1.getAllCategories);
 /**
  * @swagger
  * /api/categories/{id}:
@@ -41,8 +34,7 @@ router.get('/', getAllCategories);
  *       404:
  *         description: Category not found
  */
-router.get('/:id', getCategoryById);
-
+router.get('/:id', categoryController_1.getCategoryById);
 /**
  * @swagger
  * /api/categories:
@@ -72,8 +64,7 @@ router.get('/:id', getCategoryById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin'), createCategory);
-
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), categoryController_1.createCategory);
 /**
  * @swagger
  * /api/categories/{id}:
@@ -109,8 +100,7 @@ router.post('/', authenticateToken, authorize('admin'), createCategory);
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin'), updateCategory);
-
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), categoryController_1.updateCategory);
 /**
  * @swagger
  * /api/categories/{id}:
@@ -133,6 +123,5 @@ router.put('/:id', authenticateToken, authorize('admin'), updateCategory);
  *       401:
  *         description: Unauthorized
  */
-router.delete('/:id', authenticateToken, authorize('admin'), deleteCategory);
-
-export default router;
+router.delete('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), categoryController_1.deleteCategory);
+exports.default = router;

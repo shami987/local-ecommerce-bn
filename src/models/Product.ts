@@ -10,6 +10,7 @@ export interface ProductDocument extends Document {
   stock?: number;
   seller: string;
   location: string;
+  owner: mongoose.Types.ObjectId;
 }
 
 const productSchema = new Schema<ProductDocument>({
@@ -21,7 +22,8 @@ const productSchema = new Schema<ProductDocument>({
   image: { type: String },
   stock: { type: Number, default: 0 },
   seller: { type: String, required: true },
-  location: { type: String, required: true }
+  location: { type: String, required: true },
+  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 
 export const ProductModel = mongoose.model<ProductDocument>('Product', productSchema);

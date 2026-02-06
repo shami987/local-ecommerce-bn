@@ -1,16 +1,10 @@
-import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
-import { authorize } from '../middleware/authorize';
-import {
-  getAllShops,
-  getShopById,
-  createShop,
-  updateShop,
-  deleteShop
-} from '../controllers/shopController';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const authorize_1 = require("../middleware/authorize");
+const shopController_1 = require("../controllers/shopController");
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * /api/shops:
@@ -21,8 +15,7 @@ const router = Router();
  *       200:
  *         description: List of shops
  */
-router.get('/', getAllShops);
-
+router.get('/', shopController_1.getAllShops);
 /**
  * @swagger
  * /api/shops/{id}:
@@ -41,8 +34,7 @@ router.get('/', getAllShops);
  *       404:
  *         description: Shop not found
  */
-router.get('/:id', getShopById);
-
+router.get('/:id', shopController_1.getShopById);
 /**
  * @swagger
  * /api/shops:
@@ -81,8 +73,7 @@ router.get('/:id', getShopById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin', 'business_owner'), createShop);
-
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.createShop);
 /**
  * @swagger
  * /api/shops/{id}:
@@ -124,8 +115,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), updateShop);
-
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.updateShop);
 /**
  * @swagger
  * /api/shops/{id}:
@@ -148,6 +138,5 @@ router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), upda
  *       401:
  *         description: Unauthorized
  */
-router.delete('/:id', authenticateToken, authorize('admin', 'business_owner'), deleteShop);
-
-export default router;
+router.delete('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.deleteShop);
+exports.default = router;

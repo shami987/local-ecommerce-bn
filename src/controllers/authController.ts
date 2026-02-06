@@ -5,7 +5,7 @@ import { generateToken } from '../utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, name }: UserInput = req.body;
+    const { email, password, name, role }: UserInput = req.body;
 
     // Check if user exists
     const existingUser = await UserModel.findOne({ email });
@@ -18,7 +18,8 @@ export const register = async (req: Request, res: Response) => {
     const newUser = new UserModel({
       email,
       password: hashedPassword,
-      name
+      name,
+      role: role || 'customer'
     });
 
     await newUser.save();
@@ -27,7 +28,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(201).json({
       message: 'User registered successfully',
       token,
-      user: { id: newUser._id, email: newUser.email, name: newUser.name }
+      user: { id: newUser._id, email: newUser.email, name: newUser.name, role: newUser.role }
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -55,7 +56,7 @@ export const login = async (req: Request, res: Response) => {
     res.json({
       message: 'Login successful',
       token,
-      user: { id: user._id, email: user.email, name: user.name }
+      user: { id: user._id, email: user.email, name: user.name, role: user.role }
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

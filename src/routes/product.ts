@@ -55,7 +55,7 @@ router.get('/:id', getProductById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -78,7 +78,12 @@ router.get('/:id', getProductById);
  *               shop:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:
@@ -110,7 +115,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), upload
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -127,7 +132,12 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), upload
  *               shop:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:

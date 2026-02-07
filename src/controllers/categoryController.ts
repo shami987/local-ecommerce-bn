@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { CategoryModel } from '../models/Category';
+import { uploadToCloudinary } from '../utils/cloudinary';
 
 export const getAllCategories = async (req: Request, res: Response) => {
   try {
@@ -28,7 +29,13 @@ export const createCategory = async (req: Request, res: Response) => {
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
     }
-    const category = await CategoryModel.create({ name, description, image });
+
+    let imageUrl = image || '';
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.buffer, 'categories');
+    }
+
+    const category = await CategoryModel.create({ name, description, image: imageUrl });
     res.status(201).json({ message: 'Category created successfully', category });
   } catch (error: any) {
     if (error.code === 11000) {
@@ -41,14 +48,24 @@ export const createCategory = async (req: Request, res: Response) => {
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const { name, description, image } = req.body;
-    const category = await CategoryModel.findByIdAndUpdate(
-      req.params.id,
-      { name, description, image },
-      { new: true, runValidators: true }
-    );
-    if (!category) {
+    
+    const existingCategory = await CategoryModel.findById(req.params.id);
+    if (!existingCategory) {
       return res.status(404).json({ message: 'Category not found' });
     }
+
+    let imageUrl = existingCategory.image;
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.buffer, 'categories');
+    } else if (image) {
+      imageUrl = image;
+    }
+
+    const category = await CategoryModel.findByIdAndUpdate(
+      req.params.id,
+      { name, description, image: imageUrl },
+      { new: true, runValidators: true }
+    );
     res.json(category);
   } catch (error: any) {
     if (error.code === 11000) {

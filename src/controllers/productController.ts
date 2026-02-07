@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ProductModel } from '../models/Product';
+import { uploadToCloudinary } from '../utils/cloudinary';
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -24,13 +25,19 @@ export const getProductById = async (req: Request, res: Response) => {
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, originalPrice, category, shop, image, stock, seller, location } = req.body;
+    const { name, description, price, originalPrice, category, shop, stock, seller, location } = req.body;
     const userId = (req as any).userId;
     
     if (!name || !price || !category || !seller || !location) {
       return res.status(400).json({ message: 'Name, price, category, seller, and location are required' });
     }
-    const product = await ProductModel.create({ name, description, price, originalPrice, category, shop, image, stock, seller, location, owner: userId });
+
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.buffer, 'products');
+    }
+    
+    const product = await ProductModel.create({ name, description, price, originalPrice, category, shop, image: imageUrl, stock, seller, location, owner: userId });
     res.status(201).json({ message: 'Product created successfully', product });
   } catch (error: any) {
     console.error('Product creation error:', error);
@@ -40,7 +47,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, originalPrice, category, shop, image, stock, seller, location } = req.body;
+    const { name, description, price, originalPrice, category, shop, stock, seller, location } = req.body;
     const userId = (req as any).userId;
     const userRole = (req as any).userRole;
     
@@ -52,10 +59,15 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (userRole !== 'admin' && product.owner.toString() !== userId) {
       return res.status(403).json({ message: 'You can only update your own products' });
     }
+
+    let imageUrl = product.image;
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.buffer, 'products');
+    }
     
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       req.params.id,
-      { name, description, price, originalPrice, category, shop, image, stock, seller, location },
+      { name, description, price, originalPrice, category, shop, image: imageUrl, stock, seller, location },
       { new: true, runValidators: true }
     ).populate('category');
     

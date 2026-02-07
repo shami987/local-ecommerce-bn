@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
+import { upload } from '../middleware/upload';
 import {
   getAllProducts,
   getProductById,
@@ -90,7 +91,7 @@ router.get('/:id', getProductById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin', 'business_owner'), createProduct);
+router.post('/', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), createProduct);
 
 /**
  * @swagger
@@ -141,7 +142,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), updateProduct);
+router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), updateProduct);
 
 /**
  * @swagger

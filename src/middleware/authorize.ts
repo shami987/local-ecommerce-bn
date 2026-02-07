@@ -5,7 +5,7 @@ export const authorize = (...roles: string[]) => {
     const userRole = (req as any).userRole;
     
     if (!userRole || !roles.includes(userRole)) {
-   
+      return res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
     }
     
     next();

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
+import { upload } from '../middleware/upload';
 import {
   getAllCategories,
   getCategoryById,
@@ -54,7 +55,7 @@ router.get('/:id', getCategoryById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -65,14 +66,19 @@ router.get('/:id', getCategoryById);
  *               description:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       201:
  *         description: Category created
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin'), createCategory);
+router.post('/', authenticateToken, authorize('admin'), upload.single('image'), createCategory);
 
 /**
  * @swagger
@@ -91,7 +97,7 @@ router.post('/', authenticateToken, authorize('admin'), createCategory);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -100,7 +106,12 @@ router.post('/', authenticateToken, authorize('admin'), createCategory);
  *               description:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       200:
  *         description: Category updated
@@ -109,7 +120,7 @@ router.post('/', authenticateToken, authorize('admin'), createCategory);
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin'), updateCategory);
+router.put('/:id', authenticateToken, authorize('admin'), upload.single('image'), updateCategory);
 
 /**
  * @swagger

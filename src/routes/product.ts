@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
+import { upload } from '../middleware/upload';
 import {
   getAllProducts,
   getProductById,
@@ -54,7 +55,7 @@ router.get('/:id', getProductById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -77,7 +78,12 @@ router.get('/:id', getProductById);
  *               shop:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:
@@ -90,7 +96,7 @@ router.get('/:id', getProductById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin', 'business_owner'), createProduct);
+router.post('/', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), createProduct);
 
 /**
  * @swagger
@@ -109,7 +115,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -126,7 +132,12 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *               shop:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:
@@ -141,7 +152,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), updateProduct);
+router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), updateProduct);
 
 /**
  * @swagger

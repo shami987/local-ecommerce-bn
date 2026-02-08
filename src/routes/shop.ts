@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
+import { upload } from '../middleware/upload';
 import {
   getAllShops,
   getShopById,
@@ -54,7 +55,7 @@ router.get('/:id', getShopById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -74,14 +75,19 @@ router.get('/:id', getShopById);
  *               email:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       201:
  *         description: Shop created
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, authorize('admin', 'business_owner'), createShop);
+router.post('/', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), createShop);
 
 /**
  * @swagger
@@ -100,7 +106,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -115,7 +121,12 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *               email:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       200:
  *         description: Shop updated
@@ -124,7 +135,7 @@ router.post('/', authenticateToken, authorize('admin', 'business_owner'), create
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), updateShop);
+router.put('/:id', authenticateToken, authorize('admin', 'business_owner'), upload.single('image'), updateShop);
 
 /**
  * @swagger

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../middleware/auth");
 const authorize_1 = require("../middleware/authorize");
+const upload_1 = require("../middleware/upload");
 const shopController_1 = require("../controllers/shopController");
 const router = (0, express_1.Router)();
 /**
@@ -46,7 +47,7 @@ router.get('/:id', shopController_1.getShopById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -66,14 +67,19 @@ router.get('/:id', shopController_1.getShopById);
  *               email:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       201:
  *         description: Shop created
  *       401:
  *         description: Unauthorized
  */
-router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.createShop);
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), upload_1.upload.single('image'), shopController_1.createShop);
 /**
  * @swagger
  * /api/shops/{id}:
@@ -91,7 +97,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -106,7 +112,12 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *               email:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       200:
  *         description: Shop updated
@@ -115,7 +126,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.updateShop);
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), upload_1.upload.single('image'), shopController_1.updateShop);
 /**
  * @swagger
  * /api/shops/{id}:

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../middleware/auth");
 const authorize_1 = require("../middleware/authorize");
+const upload_1 = require("../middleware/upload");
 const categoryController_1 = require("../controllers/categoryController");
 const router = (0, express_1.Router)();
 /**
@@ -46,7 +47,7 @@ router.get('/:id', categoryController_1.getCategoryById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -57,14 +58,19 @@ router.get('/:id', categoryController_1.getCategoryById);
  *               description:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       201:
  *         description: Category created
  *       401:
  *         description: Unauthorized
  */
-router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), categoryController_1.createCategory);
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), upload_1.upload.single('image'), categoryController_1.createCategory);
 /**
  * @swagger
  * /api/categories/{id}:
@@ -82,7 +88,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), 
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -91,7 +97,12 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), 
  *               description:
  *                 type: string
  *               image:
- *                 type: string
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *     responses:
  *       200:
  *         description: Category updated
@@ -100,7 +111,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), 
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), categoryController_1.updateCategory);
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin'), upload_1.upload.single('image'), categoryController_1.updateCategory);
 /**
  * @swagger
  * /api/categories/{id}:

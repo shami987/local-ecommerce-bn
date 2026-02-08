@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../middleware/auth");
 const authorize_1 = require("../middleware/authorize");
+const upload_1 = require("../middleware/upload");
 const productController_1 = require("../controllers/productController");
 const router = (0, express_1.Router)();
 /**
@@ -46,7 +47,7 @@ router.get('/:id', productController_1.getProductById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -66,8 +67,15 @@ router.get('/:id', productController_1.getProductById);
  *                 type: number
  *               category:
  *                 type: string
- *               image:
+ *               shop:
  *                 type: string
+ *               image:
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:
@@ -80,7 +88,7 @@ router.get('/:id', productController_1.getProductById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.createProduct);
+router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), upload_1.upload.single('image'), productController_1.createProduct);
 /**
  * @swagger
  * /api/products/{id}:
@@ -98,7 +106,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -112,8 +120,15 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *                 type: number
  *               category:
  *                 type: string
- *               image:
+ *               shop:
  *                 type: string
+ *               image:
+ *                 oneOf:
+ *                   - type: string
+ *                     format: binary
+ *                     description: Upload image file
+ *                   - type: string
+ *                     description: Image URL
  *               stock:
  *                 type: number
  *               seller:
@@ -128,7 +143,7 @@ router.post('/', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', '
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.updateProduct);
+router.put('/:id', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), upload_1.upload.single('image'), productController_1.updateProduct);
 /**
  * @swagger
  * /api/products/{id}:

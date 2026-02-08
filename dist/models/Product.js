@@ -41,6 +41,7 @@ const productSchema = new mongoose_1.Schema({
     price: { type: Number, required: true },
     originalPrice: { type: Number },
     category: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Category', required: true },
+    shop: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Shop' },
     image: { type: String },
     stock: { type: Number, default: 0 },
     seller: { type: String, required: true },

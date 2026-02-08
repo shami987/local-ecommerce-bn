@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCategory = exports.updateCategory = exports.createCategory = exports.getCategoryById = exports.getAllCategories = void 0;
 const Category_1 = require("../models/Category");
+const cloudinary_1 = require("../utils/cloudinary");
 const getAllCategories = async (req, res) => {
     try {
         const categories = await Category_1.CategoryModel.find();
@@ -31,7 +32,11 @@ const createCategory = async (req, res) => {
         if (!name) {
             return res.status(400).json({ message: 'Name is required' });
         }
-        const category = await Category_1.CategoryModel.create({ name, description, image });
+        let imageUrl = image || '';
+        if (req.file) {
+            imageUrl = await (0, cloudinary_1.uploadToCloudinary)(req.file.buffer, 'categories');
+        }
+        const category = await Category_1.CategoryModel.create({ name, description, image: imageUrl });
         res.status(201).json({ message: 'Category created successfully', category });
     }
     catch (error) {
@@ -45,10 +50,18 @@ exports.createCategory = createCategory;
 const updateCategory = async (req, res) => {
     try {
         const { name, description, image } = req.body;
-        const category = await Category_1.CategoryModel.findByIdAndUpdate(req.params.id, { name, description, image }, { new: true, runValidators: true });
-        if (!category) {
+        const existingCategory = await Category_1.CategoryModel.findById(req.params.id);
+        if (!existingCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
+        let imageUrl = existingCategory.image;
+        if (req.file) {
+            imageUrl = await (0, cloudinary_1.uploadToCloudinary)(req.file.buffer, 'categories');
+        }
+        else if (image) {
+            imageUrl = image;
+        }
+        const category = await Category_1.CategoryModel.findByIdAndUpdate(req.params.id, { name, description, image: imageUrl }, { new: true, runValidators: true });
         res.json(category);
     }
     catch (error) {

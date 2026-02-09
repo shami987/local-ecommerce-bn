@@ -1,3 +1,4 @@
+//this is where i manage authentication related logic like register and login, i will use bcrypt for password hashing and jsonwebtoken for token generation. i will also create a user model to interact with the database.
 import { Request, Response } from 'express';
 import { UserModel, UserInput, LoginInput } from '../models/User';
 import { hashPassword, comparePassword } from '../utils/password';

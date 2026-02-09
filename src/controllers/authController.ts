@@ -1,3 +1,4 @@
+//this is where i manage authentication related logic like register and login, i will use bcrypt for password hashing and jsonwebtoken for token generation. i will also create a user model to interact with the database.
 import { Request, Response } from 'express';
 import { UserModel, UserInput, LoginInput } from '../models/User';
 import { hashPassword, comparePassword } from '../utils/password';
@@ -12,8 +13,8 @@ export const register = async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
-    // Hash password and create user
+      
+    // Hash password and create user  
     const hashedPassword = await hashPassword(password);
     const newUser = new UserModel({
       email,
@@ -62,3 +63,4 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+

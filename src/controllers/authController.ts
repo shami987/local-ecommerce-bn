@@ -12,8 +12,8 @@ export const register = async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
-    // Hash password and create user
+      
+    // Hash password and create user  
     const hashedPassword = await hashPassword(password);
     const newUser = new UserModel({
       email,
@@ -62,3 +62,4 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+

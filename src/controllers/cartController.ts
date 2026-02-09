@@ -1,3 +1,4 @@
+//controlling `cart` related operations such as adding items, updating quantities, and clearing the cart.
 import { Request, Response } from 'express';
 import { CartModel } from '../models/Cart';
 

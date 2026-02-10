@@ -5,7 +5,7 @@ export const uploadToCloudinary = (buffer: Buffer, folder: string = 'products'):
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder },
-      (error, result) => {
+      (error: any, result: any) => {
         if (error) return reject(error);
         resolve(result!.secure_url);
       }

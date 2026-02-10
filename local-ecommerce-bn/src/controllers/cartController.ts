@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CartModel } from '../models/Cart';
+import { CartModel, CartItemDocument } from '../models/Cart';
 
 export const getCart = async (req: Request, res: Response) => {
   try {
@@ -31,7 +31,7 @@ export const addToCart = async (req: Request, res: Response) => {
     if (!cart) {
       cart = await CartModel.create({ userId, items: [{ product: productId, quantity }] });
     } else {
-      const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+      const itemIndex = cart.items.findIndex((item: CartItemDocument) => item.product.toString() === productId);
 
       if (itemIndex > -1) {
         cart.items[itemIndex].quantity += quantity;
@@ -65,7 +65,7 @@ export const updateCartItem = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+    const itemIndex = cart.items.findIndex((item: CartItemDocument) => item.product.toString() === productId);
 
     if (itemIndex === -1) {
       return res.status(404).json({ message: 'Product not found in cart' });
@@ -92,7 +92,7 @@ export const removeFromCart = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    cart.items = cart.items.filter(item => item.product.toString() !== productId);
+    cart.items = cart.items.filter((item: CartItemDocument) => item.product.toString() !== productId);
     await cart.save();
 
     const updatedCart = await CartModel.findOne({ userId }).populate('items.product');

@@ -13,9 +13,28 @@ import shopRoutes from './routes/shop';
 import promotionRoutes from './routes/promotion';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/order';
+import cors from 'cors';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Adding cors middleware to allow cross-origin requests
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://smart-local-commerce-8th6.vercel.app/'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
 // Middleware
 app.use(express.json());

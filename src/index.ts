@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { connectDB } from './config/database';
 import { swaggerSpec } from './config/swagger';
@@ -19,24 +20,8 @@ import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Adding cors middleware to allow cross-origin requests
-
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://smart-local-commerce.vercel.app',
-  'https://smart-local-commerce.vercel.app/',
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+// CORS Middleware - must be before other middleware
+app.use(cors());
 
 // Middleware
 app.use(express.json());

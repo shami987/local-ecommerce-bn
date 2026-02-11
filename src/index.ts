@@ -23,8 +23,10 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://smart-local-commerce-8th6.vercel.app/'
-];
+  'https://smart-local-commerce.vercel.app',
+  'https://smart-local-commerce.vercel.app/',
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {

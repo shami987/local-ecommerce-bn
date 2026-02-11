@@ -19,7 +19,7 @@ const router = Router();
  *       403:
  *         description: Admin access required
  */
-router.get('/admin/all', authenticateToken, authorize(['admin']), getAllOrders);
+router.get('/admin/all', authenticateToken, authorize('admin'), getAllOrders);
 
 /**
  * @swagger
@@ -114,6 +114,6 @@ router.get('/:id', authenticateToken, getOrderById);
  *       200:
  *         description: Order status updated
  */
-router.put('/:id/status', authenticateToken, authorize(['admin']), updateOrderStatus);
+router.put('/:id/status', authenticateToken, authorize('admin'), updateOrderStatus);
 
 export default router;

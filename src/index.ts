@@ -14,7 +14,6 @@ import shopRoutes from './routes/shop';
 import promotionRoutes from './routes/promotion';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/order';
-import cors from 'cors';
 
 
 const app = express();

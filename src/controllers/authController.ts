@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { UserModel, UserInput, LoginInput } from '../models/User';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateToken } from '../utils/jwt';
+import { sendWelcomeEmail } from '../utils/email';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -24,6 +25,14 @@ export const register = async (req: Request, res: Response) => {
     });
 
     await newUser.save();
+
+    // Send welcome email
+    try {
+      await sendWelcomeEmail(newUser.email, newUser.name);
+    } catch (err) {
+      console.error('Welcome email failed:', err);
+    }
+
     const token = generateToken(newUser._id.toString());
 
     res.status(201).json({

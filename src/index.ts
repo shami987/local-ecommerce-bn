@@ -13,6 +13,7 @@ import shopRoutes from './routes/shop';
 import promotionRoutes from './routes/promotion';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/order';
+import userRoutes from './routes/user';
 import cors from 'cors';
 
 
@@ -52,6 +53,7 @@ app.use('/api/shops', shopRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.json({ 

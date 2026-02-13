@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { PromotionModel } from '../models/Promotion';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { sendNewPromotionNotification } from '../utils/email';
+import { UserModel } from '../models/User';
+import { ShopModel } from '../models/Shop';
 
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {
@@ -71,6 +74,17 @@ export const createPromotion = async (req: Request, res: Response) => {
       terms,
       owner: userId
     });
+
+    // Send email notifications to all customers
+    const shopData = await ShopModel.findById(shop);
+    const discount = discountType === 'percentage' ? `${discountValue}%` : `$${discountValue}`;
+    const users = await UserModel.find({ role: 'customer' }, 'email name');
+    const emailPromises = users.map(user => 
+      sendNewPromotionNotification(user.email, user.name, shopData?.name || 'Shop', discount).catch(err => 
+        console.error(`Failed to send email to ${user.email}:`, err)
+      )
+    );
+    await Promise.all(emailPromises);
 
     res.status(201).json({ message: 'Promotion created successfully', promotion });
   } catch (error: any) {

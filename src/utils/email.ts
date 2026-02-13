@@ -61,3 +61,25 @@ export const sendNewShopNotification = async (email: string, name: string, shopN
 
   await transporter.sendMail(mailOptions);
 };
+
+export const sendNewPromotionNotification = async (email: string, name: string, shopName: string, discount: string) => {
+  const mailOptions = {
+    from: `"Smart Local Commerce" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: '🎁 New Promotion Alert - Save Now!',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #4CAF50;">Hi ${name}! 👋</h2>
+        <p>Exciting news! A new promotion is now available.</p>
+        <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
+          <h3 style="margin: 0 0 10px 0; color: #333;">🏪 ${shopName}</h3>
+          <p style="margin: 5px 0; color: #856404; font-size: 18px; font-weight: bold;">💰 ${discount} OFF</p>
+        </div>
+        <p>Don't miss out on this amazing deal!</p>
+        <p style="color: #666; font-size: 12px;">Best regards,<br>Smart Local Commerce Team</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};

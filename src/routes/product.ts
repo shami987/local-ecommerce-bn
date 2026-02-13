@@ -7,7 +7,8 @@ import {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getMyProducts
 } from '../controllers/productController';
 
 const router = Router();
@@ -23,6 +24,20 @@ const router = Router();
  *         description: List of products
  */
 router.get('/', getAllProducts);
+
+/**
+ * @swagger
+ * /api/products/my:
+ *   get:
+ *     summary: Get my products (Protected)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's products
+ */
+router.get('/my', authenticateToken, authorize('admin', 'business_owner'), getMyProducts);
 
 /**
  * @swagger

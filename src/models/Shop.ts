@@ -7,6 +7,7 @@ export interface ShopDocument extends Document {
   telephone: string;
   email: string;
   image?: string;
+  owner: mongoose.Types.ObjectId;
 }
 
 const shopSchema = new Schema<ShopDocument>({
@@ -15,7 +16,8 @@ const shopSchema = new Schema<ShopDocument>({
   location: { type: String, required: true },
   telephone: { type: String, required: true },
   email: { type: String, required: true },
-  image: { type: String }
+  image: { type: String },
+  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 
 export const ShopModel = mongoose.model<ShopDocument>('Shop', shopSchema);

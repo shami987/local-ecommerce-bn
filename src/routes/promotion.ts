@@ -8,7 +8,8 @@ import {
   getPromotionById,
   createPromotion,
   updatePromotion,
-  deletePromotion
+  deletePromotion,
+  getMyPromotions
 } from '../controllers/promotionController';
 
 const router = Router();
@@ -24,6 +25,20 @@ const router = Router();
  *         description: List of promotions
  */
 router.get('/', getAllPromotions);
+
+/**
+ * @swagger
+ * /api/promotions/my:
+ *   get:
+ *     summary: Get my promotions (Protected)
+ *     tags: [Promotions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's promotions
+ */
+router.get('/my', authenticateToken, authorize('admin', 'business_owner'), getMyPromotions);
 
 /**
  * @swagger

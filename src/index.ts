@@ -12,9 +12,21 @@ import productRoutes from './routes/product';
 import shopRoutes from './routes/shop';
 import promotionRoutes from './routes/promotion';
 import cartRoutes from './routes/cart';
+import orderRoutes from './routes/order';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// CORS Middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json());
@@ -29,6 +41,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.get('/', (req, res) => {
   res.json({ 

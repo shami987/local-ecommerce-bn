@@ -19,6 +19,19 @@ const router = (0, express_1.Router)();
 router.get('/', shopController_1.getAllShops);
 /**
  * @swagger
+ * /api/shops/my:
+ *   get:
+ *     summary: Get my shops (Protected)
+ *     tags: [Shops]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's shops
+ */
+router.get('/my', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), shopController_1.getMyShops);
+/**
+ * @swagger
  * /api/shops/{id}:
  *   get:
  *     summary: Get shop by ID (Public)

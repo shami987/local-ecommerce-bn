@@ -7,7 +7,8 @@ import {
   getShopById,
   createShop,
   updateShop,
-  deleteShop
+  deleteShop,
+  getMyShops
 } from '../controllers/shopController';
 
 const router = Router();
@@ -23,6 +24,20 @@ const router = Router();
  *         description: List of shops
  */
 router.get('/', getAllShops);
+
+/**
+ * @swagger
+ * /api/shops/my:
+ *   get:
+ *     summary: Get my shops (Protected)
+ *     tags: [Shops]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's shops
+ */
+router.get('/my', authenticateToken, authorize('admin', 'business_owner'), getMyShops);
 
 /**
  * @swagger

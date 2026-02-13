@@ -1,8 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getAllProducts = void 0;
+exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProductById = exports.getAllProducts = exports.getMyProducts = void 0;
 const Product_1 = require("../models/Product");
 const cloudinary_1 = require("../utils/cloudinary");
+const getMyProducts = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const products = await Product_1.ProductModel.find({ owner: userId }).populate('category').populate('shop');
+        res.json(products);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+exports.getMyProducts = getMyProducts;
 const getAllProducts = async (req, res) => {
     try {
         const products = await Product_1.ProductModel.find().populate('category');

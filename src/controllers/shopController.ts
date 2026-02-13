@@ -2,6 +2,16 @@ import { Request, Response } from 'express';
 import { ShopModel } from '../models/Shop';
 import { uploadToCloudinary } from '../utils/cloudinary';
 
+export const getMyShops = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const shops = await ShopModel.find({ owner: userId });
+    res.json(shops);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const getAllShops = async (req: Request, res: Response) => {
   try {
     const shops = await ShopModel.find();
@@ -26,6 +36,7 @@ export const getShopById = async (req: Request, res: Response) => {
 export const createShop = async (req: Request, res: Response) => {
   try {
     const { name, description, location, telephone, email, image } = req.body;
+    const userId = (req as any).userId;
     if (!name || !location || !telephone || !email) {
       return res.status(400).json({ message: 'Name, location, telephone, and email are required' });
     }
@@ -35,7 +46,7 @@ export const createShop = async (req: Request, res: Response) => {
       imageUrl = await uploadToCloudinary(req.file.buffer, 'shops');
     }
 
-    const shop = await ShopModel.create({ name, description, location, telephone, email, image: imageUrl });
+    const shop = await ShopModel.create({ name, description, location, telephone, email, image: imageUrl, owner: userId });
     res.status(201).json({ message: 'Shop created successfully', shop });
   } catch (error: any) {
     console.error('Shop creation error:', error);
@@ -49,10 +60,16 @@ export const createShop = async (req: Request, res: Response) => {
 export const updateShop = async (req: Request, res: Response) => {
   try {
     const { name, description, location, telephone, email, image } = req.body;
+    const userId = (req as any).userId;
+    const userRole = (req as any).userRole;
     
     const existingShop = await ShopModel.findById(req.params.id);
     if (!existingShop) {
       return res.status(404).json({ message: 'Shop not found' });
+    }
+    
+    if (userRole !== 'admin' && existingShop.owner.toString() !== userId) {
+      return res.status(403).json({ message: 'You can only update your own shops' });
     }
 
     let imageUrl = existingShop.image;
@@ -78,10 +95,19 @@ export const updateShop = async (req: Request, res: Response) => {
 
 export const deleteShop = async (req: Request, res: Response) => {
   try {
-    const shop = await ShopModel.findByIdAndDelete(req.params.id);
+    const userId = (req as any).userId;
+    const userRole = (req as any).userRole;
+    
+    const shop = await ShopModel.findById(req.params.id);
     if (!shop) {
       return res.status(404).json({ message: 'Shop not found' });
     }
+    
+    if (userRole !== 'admin' && shop.owner.toString() !== userId) {
+      return res.status(403).json({ message: 'You can only delete your own shops' });
+    }
+    
+    await ShopModel.findByIdAndDelete(req.params.id);
     res.json({ message: 'Shop deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

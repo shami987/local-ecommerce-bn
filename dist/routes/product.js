@@ -19,6 +19,19 @@ const router = (0, express_1.Router)();
 router.get('/', productController_1.getAllProducts);
 /**
  * @swagger
+ * /api/products/my:
+ *   get:
+ *     summary: Get my products (Protected)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's products
+ */
+router.get('/my', auth_1.authenticateToken, (0, authorize_1.authorize)('admin', 'business_owner'), productController_1.getMyProducts);
+/**
+ * @swagger
  * /api/products/{id}:
  *   get:
  *     summary: Get product by ID (Public)

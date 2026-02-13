@@ -41,6 +41,7 @@ const shopSchema = new mongoose_1.Schema({
     location: { type: String, required: true },
     telephone: { type: String, required: true },
     email: { type: String, required: true },
-    image: { type: String }
+    image: { type: String },
+    owner: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 exports.ShopModel = mongoose_1.default.model('Shop', shopSchema);

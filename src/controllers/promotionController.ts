@@ -2,6 +2,16 @@ import { Request, Response } from 'express';
 import { PromotionModel } from '../models/Promotion';
 import { uploadToCloudinary } from '../utils/cloudinary';
 
+export const getMyPromotions = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const promotions = await PromotionModel.find({ owner: userId }).populate('shop').populate('category');
+    res.json(promotions);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {
     const promotions = await PromotionModel.find()

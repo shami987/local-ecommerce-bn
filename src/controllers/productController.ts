@@ -2,6 +2,16 @@ import { Request, Response } from 'express';
 import { ProductModel } from '../models/Product';
 import { uploadToCloudinary } from '../utils/cloudinary';
 
+export const getMyProducts = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const products = await ProductModel.find({ owner: userId }).populate('category').populate('shop');
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await ProductModel.find().populate('category');

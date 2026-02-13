@@ -15,6 +15,7 @@ import promotionRoutes from './routes/promotion';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/order';
 import userRoutes from './routes/user';
+import blogRoutes from './routes/blog';
 
 
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api/promotions', promotionRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/blog', blogRoutes);
 
 app.get('/', (req, res) => {
   res.json({ 

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { ShopModel } from '../models/Shop';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { sendNewShopNotification } from '../utils/email';
+import { UserModel } from '../models/User';
 
 export const getAllShops = async (req: Request, res: Response) => {
   try {
@@ -36,6 +38,16 @@ export const createShop = async (req: Request, res: Response) => {
     }
 
     const shop = await ShopModel.create({ name, description, location, telephone, email, image: imageUrl });
+    
+    // Send email notifications to all users
+    const users = await UserModel.find({}, 'email name');
+    const emailPromises = users.map(user => 
+      sendNewShopNotification(user.email, user.name, shop.name, shop.location).catch(err => 
+        console.error(`Failed to send email to ${user.email}:`, err)
+      )
+    );
+    await Promise.all(emailPromises);
+
     res.status(201).json({ message: 'Shop created successfully', shop });
   } catch (error: any) {
     console.error('Shop creation error:', error);

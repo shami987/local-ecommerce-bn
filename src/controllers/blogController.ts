@@ -25,6 +25,24 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
+export const getPostById = async (req: Request, res: Response) => {
+  try {
+    const post = await BlogPostModel.findById(req.params.id)
+      .populate('author', 'name email');
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    post.views += 1;
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const post = await BlogPostModel.findOne({ slug: req.params.slug })

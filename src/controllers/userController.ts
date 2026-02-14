@@ -10,6 +10,18 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const user = await UserModel.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { name, email, role } = req.body;

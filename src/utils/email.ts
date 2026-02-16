@@ -13,7 +13,7 @@ export const transporter = nodemailer.createTransport({
 transporter
   .verify()
   .then(() => console.log('SMTP ready'))
-  .catch((err) => console.error('SMTP config error:', err));
+  .catch((err: Error) => console.error('SMTP config error:', err));
 
 
 export const sendWelcomeEmail = async (email: string, name: string) => {

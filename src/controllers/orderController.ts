@@ -6,10 +6,14 @@ import { ProductModel } from '../models/Product';
 export const createOrder = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const { shippingAddress } = req.body;
+    const { shippingAddress, paymentMethod } = req.body;
 
     if (!shippingAddress) {
       return res.status(400).json({ message: 'Shipping address is required' });
+    }
+
+    if (!paymentMethod) {
+      return res.status(400).json({ message: 'Payment method is required' });
     }
 
     const cart = await CartModel.findOne({ userId }).populate('items.product');
@@ -29,7 +33,8 @@ export const createOrder = async (req: Request, res: Response) => {
       userId,
       items: orderItems,
       totalAmount,
-      shippingAddress
+      shippingAddress,
+      paymentMethod
     });
 
     await CartModel.findOneAndUpdate({ userId }, { items: [] });
@@ -37,6 +42,7 @@ export const createOrder = async (req: Request, res: Response) => {
     const populatedOrder = await OrderModel.findById(order._id).populate('items.product');
     res.status(201).json({ message: 'Order created successfully', order: populatedOrder });
   } catch (error: any) {
+    console.error('Order creation error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

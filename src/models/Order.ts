@@ -9,7 +9,15 @@ export interface IOrder extends Document {
   }[];
   totalAmount: number;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  shippingAddress: string;
+  shippingAddress: {
+    fullName: string;
+    phone: string;
+    email: string;
+    address: string;
+    city: string;
+    postalCode?: string;
+  };
+  paymentMethod: string;
   createdAt: Date;
 }
 
@@ -22,7 +30,15 @@ const orderSchema = new Schema<IOrder>({
   }],
   totalAmount: { type: Number, required: true },
   status: { type: String, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], default: 'pending' },
-  shippingAddress: { type: String, required: true }
+  shippingAddress: {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: String }
+  },
+  paymentMethod: { type: String, required: true }
 }, { timestamps: true });
 
 export const OrderModel = mongoose.model<IOrder>('Order', orderSchema);

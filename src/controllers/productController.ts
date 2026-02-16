@@ -51,6 +51,9 @@ export const updateProduct = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const userRole = (req as any).userRole;
     
+    console.log('Update request body:', req.body);
+    console.log('User ID:', userId, 'Role:', userRole);
+    
     const product = await ProductModel.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -65,9 +68,24 @@ export const updateProduct = async (req: Request, res: Response) => {
       imageUrl = await uploadToCloudinary(req.file.buffer, 'products');
     }
     
+    const updateData = {
+      name: name || product.name,
+      description: description !== undefined ? description : product.description,
+      price: price || product.price,
+      originalPrice: originalPrice !== undefined ? originalPrice : product.originalPrice,
+      category: category || product.category,
+      shop: shop !== undefined ? shop : product.shop,
+      image: imageUrl,
+      stock: stock !== undefined ? stock : product.stock,
+      seller: seller || product.seller,
+      location: location || product.location
+    };
+    
+    console.log('Update data:', updateData);
+    
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       req.params.id,
-      { name, description, price, originalPrice, category, shop, image: imageUrl, stock, seller, location },
+      updateData,
       { new: true, runValidators: true }
     ).populate('category');
     

@@ -68,18 +68,17 @@ export const updateProduct = async (req: Request, res: Response) => {
       imageUrl = await uploadToCloudinary(req.file.buffer, 'products');
     }
     
-    const updateData = {
-      name: name || product.name,
-      description: description !== undefined ? description : product.description,
-      price: price || product.price,
-      originalPrice: originalPrice !== undefined ? originalPrice : product.originalPrice,
-      category: category || product.category,
-      shop: shop !== undefined ? shop : product.shop,
-      image: imageUrl,
-      stock: stock !== undefined ? stock : product.stock,
-      seller: seller || product.seller,
-      location: location || product.location
-    };
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (price) updateData.price = price;
+    if (originalPrice !== undefined) updateData.originalPrice = originalPrice;
+    if (category) updateData.category = category;
+    if (shop !== undefined) updateData.shop = shop;
+    if (imageUrl) updateData.image = imageUrl;
+    if (stock !== undefined) updateData.stock = stock;
+    if (seller) updateData.seller = seller;
+    if (location) updateData.location = location;
     
     console.log('Update data:', updateData);
     

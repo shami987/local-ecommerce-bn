@@ -37,9 +37,32 @@ router.get('/admin/all', authenticateToken, authorize('admin'), getAllOrders);
  *             type: object
  *             required:
  *               - shippingAddress
+ *               - paymentMethod
  *             properties:
  *               shippingAddress:
+ *                 type: object
+ *                 required:
+ *                   - fullName
+ *                   - phone
+ *                   - email
+ *                   - address
+ *                   - city
+ *                 properties:
+ *                   fullName:
+ *                     type: string
+ *                   phone:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   address:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   postalCode:
+ *                     type: string
+ *               paymentMethod:
  *                 type: string
+ *                 enum: [cash_on_delivery, mobile_money]
  *     responses:
  *       201:
  *         description: Order created

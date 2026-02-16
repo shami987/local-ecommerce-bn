@@ -59,7 +59,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Product not found' });
     }
     
-    if (userRole !== 'admin' && product.owner.toString() !== userId) {
+    if (userRole !== 'admin' && (!product.owner || product.owner.toString() !== userId)) {
       return res.status(403).json({ message: 'You can only update your own products' });
     }
 

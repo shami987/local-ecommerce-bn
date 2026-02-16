@@ -72,8 +72,9 @@ export const updateProduct = async (req: Request, res: Response) => {
     ).populate('category');
     
     res.json({ message: 'Product updated successfully', product: updatedProduct });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Product update error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
